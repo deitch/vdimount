@@ -1,0 +1,23 @@
+#!/bin/bash
+
+MNT=/mntvdi
+if [[ -z "$1" ]]; then
+  echo "Usage: $0 path_to_file.vdi"
+  exit 1
+fi
+
+modprobe nbd
+qemu-nbd -c /dev/nbd0 $1
+
+# it takes a few seconds
+sleep 3
+
+# mount each one
+mkdir -p $MNT
+for i in $(cd /dev; ls nbd0p*); do
+  mpnt=${MNT}/${i:4}
+  mkdir -p $mpnt
+  mount /dev/$i $mpnt
+  echo "mounted ${i:4} at ${mpnt}"
+done
+

@@ -1,0 +1,10 @@
+#!/bin/bash
+
+# unmount any mounted filesystems
+for i in $(ls /dev/nbd0p*); do
+  umount $i
+done
+
+# unmount the device
+qemu-nbd -d /dev/nbd0
+
